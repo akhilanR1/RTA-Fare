@@ -119,7 +119,24 @@ struct ContentView: View {
 
                 Section {
                     Button(action: {
-                        fare = calculateFare(from: startStation, to: endStation, cardType: selectedCardType)
+                        print("Request started")
+                        let start = startStation.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                        let end = endStation.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                        let card = selectedCardType.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+
+                        let urlString = "http://192.168.1.21:8080/fare?start=\(start)&end=\(end)&cardType=\(card)"
+
+                        guard let url = URL(string: urlString) else { return }
+
+                        URLSession.shared.dataTask(with: url) { data, response, error in
+                            if let data = data,
+                               let result = String(data: data, encoding: .utf8) {
+
+                                DispatchQueue.main.async {
+                                   fare = Double(result) // for now
+                                }
+                            }
+                            }.resume()
                     }) {
                         HStack {
                             Spacer()
@@ -149,6 +166,7 @@ struct ContentView: View {
         }
     }
     
+    /*
     func calculateFare(from: String, to: String, cardType: String) -> Double {
         guard let fromZone = stations[from], let toZone = stations[to] else { return 0.0 }
         let zonesApart = abs(fromZone - toZone)
@@ -178,5 +196,5 @@ struct ContentView: View {
         default:
             return 0.0
         }
-    }
+    }*/
 }

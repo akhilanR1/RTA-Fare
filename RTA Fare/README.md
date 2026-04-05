@@ -12,7 +12,7 @@ Built as a portfolio project to learn real-world app architecture and client-ser
 
 ## App Preview
 
-![App Screenshot](screenshot.png)
+![App Screenshot](app-preview.png)
 
 ---
 
